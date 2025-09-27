@@ -22,7 +22,7 @@ data "aws_route53_zone" "zone" {
 # Validation record
 resource "aws_route53_record" "cert_validation" {
   for_each = {
-    for dvo in aws_acm_certificate.site_cert.domain_validation_options : dvo.domain_name => {
+    for dvo in aws_acm_certificate.toro_cert.domain_validation_options : dvo.domain_name => {
       name  = dvo.resource_record_name
       type  = dvo.resource_record_type
       value = dvo.resource_record_value
@@ -44,7 +44,7 @@ resource "aws_acm_certificate_validation" "cert_validation" {
 
 # CloudFront Origin Access Control
 resource "aws_cloudfront_origin_access_control" "s3_oac" {
-  name                              = "S3-OAC"
+  name                              = "S3-Toro-OAC"
   description                       = "Access control for S3 static site"
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"

@@ -3,8 +3,8 @@ provider "aws" {
   profile = "personal"
 }
 
-# ACM certificate for your domain
-resource "aws_acm_certificate" "site_cert" {
+# ACM certificate
+resource "aws_acm_certificate" "toro_cert" {
   domain_name       = var.domain_name
   validation_method = "DNS"
 
@@ -13,7 +13,7 @@ resource "aws_acm_certificate" "site_cert" {
   }
 }
 
-# Route 53 zone lookup (assumes you use Route 53)
+# Route 53 zone lookup
 data "aws_route53_zone" "zone" {
   name         = var.domain_name
   private_zone = false
@@ -38,11 +38,11 @@ resource "aws_route53_record" "cert_validation" {
 
 # Certificate validation
 resource "aws_acm_certificate_validation" "cert_validation" {
-  certificate_arn         = aws_acm_certificate.site_cert.arn
+  certificate_arn         = aws_acm_certificate.toro_cert.arn
   validation_record_fqdns = [for record in aws_route53_record.cert_validation : record.fqdn]
 }
 
-# CloudFront Origin Access Control (recommended over legacy OAI)
+# CloudFront Origin Access Control
 resource "aws_cloudfront_origin_access_control" "s3_oac" {
   name                              = "S3-OAC"
   description                       = "Access control for S3 static site"
@@ -52,7 +52,7 @@ resource "aws_cloudfront_origin_access_control" "s3_oac" {
 }
 
 # CloudFront distribution
-resource "aws_cloudfront_distribution" "site" {
+resource "aws_cloudfront_distribution" "toro_site" {
   origin {
     domain_name = "${var.s3_bucket}.s3.amazonaws.com"
     origin_id   = "s3-origin"
@@ -93,7 +93,7 @@ resource "aws_cloudfront_distribution" "site" {
   }
 
   tags = {
-    Name = "MyPersonalSiteCDN"
+    Name = "MyToroSiteCDN"
   }
 }
 

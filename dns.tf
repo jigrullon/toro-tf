@@ -1,13 +1,13 @@
 # Lookup the hosted zone
 data "aws_route53_zone" "main" {
-  name         = "jaimegrullon.com"
+  name         = "torotech.dev"
   private_zone = false
 }
 
 # Create/replace the A record to point to CloudFront
 resource "aws_route53_record" "root_alias" {
   zone_id = data.aws_route53_zone.main.zone_id
-  name    = "jaimegrullon.com"
+  name    = "torotech.dev"
   type    = "A"
 
   alias {
